@@ -79,7 +79,7 @@ namespace Boilerplate.Tests
         [Test]
         public async Task InvalidItemPayloadExceptionWithMultipleDetailsThrown()
         {
-            var itemType = "Org.WorkloadSample.Item1";
+            var itemType = "Org.WorkloadSampleKusto.Item1";
             var itemId = "4922bafe-54d8-4baf-9a67-8d6d0db1d51b";
 
             await TestExceptionFilter(

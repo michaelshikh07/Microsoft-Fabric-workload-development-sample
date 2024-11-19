@@ -6,7 +6,7 @@ namespace Fabric_Extension_BE_Boilerplate.Constants
 {
     public static class WorkloadConstants
     {
-        public const string WorkloadName = "Org.WorkloadSample";
+        public const string WorkloadName = "Org.WorkloadSampleKusto";
 
         public static class ItemTypes
         {
