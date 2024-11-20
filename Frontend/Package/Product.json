@@ -1,11 +1,11 @@
 {
     "name": "Product",
-    "displayName": "Sample Workload",
-    "fullDisplayName": "Sample Workload",
-    "description": "Sample Workload Description",
-    "favicon": "assets/briefcase.png",
+    "displayName": "Kusto Workload",
+    "fullDisplayName": "Kusto Sample Workload",
+    "description": "Kusto Sample Workload Description",
+    "favicon": "assets/kusto.png",
     "icon": {
-      "name": "assets/briefcase.png"
+      "name": "assets/kusto.png"
     },
     "homePage": {
       "learningMaterials": [
@@ -33,7 +33,7 @@
             {
                 "title": "Frontend only playground",
                 "icon": {
-                  "name": "assets/briefcase.png"
+                  "name": "assets/kusto.png"
                 },
                 "onClick": {
                   "action": "open.createSampleWorkloadFrontendOnly"

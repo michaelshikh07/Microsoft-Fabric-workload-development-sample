@@ -82,7 +82,7 @@ export function getJobDetailsPane(jobContext: ItemJobActionContext, hostUrl: str
         data: [
             {
                 label: 'Item Type',
-                value: 'Sample Workload Item',
+                value: 'Kusto Sample Workload Item',
                 type: 'text',
             },
             {
