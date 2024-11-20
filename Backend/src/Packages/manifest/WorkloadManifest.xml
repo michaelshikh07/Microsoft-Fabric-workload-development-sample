@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <WorkloadManifestConfiguration xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance" SchemaVersion="1.0.0">
-  <Workload WorkloadName="Org.WorkloadSampleKustoe" HostingType="Remote">
+  <Workload WorkloadName="Org.WorkloadSampleKusto" HostingType="Remote">
     <Version>1.0.0</Version>
     <RemoteServiceConfiguration>
       <CloudServiceConfiguration>
         <Cloud>Public</Cloud>
         <AADApp>
-          <AppId>00000000-0000-0000-0000-000000000000</AppId> <!-- Your application ID -->
-          <RedirectUri>http://localhost</RedirectUri>
-          <ResourceId>api://localdevinstance/tenantID/Org.WorkloadSampleKusto</ResourceId>
+          <AppId>4aaa8b85-87b8-4ad7-8cbd-cad1598894cc</AppId> <!-- Your application ID -->
+          <RedirectUri>http://localhost:60006/close</RedirectUri>
+          <ResourceId>api://localdevinstance/5474a1cd-79bc-432d-872f-eb679d2b2610/Org.WorkloadSampleKusto</ResourceId>
         </AADApp>
         <Endpoints>
           <ServiceEndpoint>
