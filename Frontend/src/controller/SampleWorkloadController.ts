@@ -35,6 +35,7 @@ import { Dispatch, SetStateAction } from "react";
 import { GenericItem } from '../models/SampleWorkloadModel';
 import { jobTypeDisplayNames } from "../utils";
 import { AuthenticationUIRequiredException, AuthUIRequired, FabricExternalWorkloadError } from "../models/WorkloadExceptionsModel";
+import { EventhouseItemMetadata } from "src/models/EventhouseModel";
 // --- Notification API
 
 
@@ -810,14 +811,14 @@ export async function callItem1DoubleResult(workloadBEUrl: string, workloadClien
 }
 
 /**
- * Calls the GetEventhouseDatabases endpoint of the workload API to get the list of databases object ids.
+ * Calls the GetEventhouseDatabases endpoint of the workload API to get the eventhouse item metadata
  * 
  * @param {WorkloadClientAPI} workloadClient - An instance of the WorkloadClientAPI.
  * @param {string} workspaceObjectId - The workspace object ID.
  * @param {string} eventhouseObjectId - The Eventhouse object ID.
  * @returns {Promise<{ Operand1: number, Operand2: number }>} A Promise that resolves to an object containing the updated operands.
  */
-export async function callGetEventhouseDatabases(workloadBEUrl: string, workloadClient: WorkloadClientAPI, workspaceObjectId: string, eventhouseObjectId: string): Promise<string[]> {
+export async function callGetEventhouseItem(workloadBEUrl: string, workloadClient: WorkloadClientAPI, workspaceObjectId: string, eventhouseObjectId: string): Promise<EventhouseItemMetadata> {
     try {
         const accessToken: AccessToken = await callAuthAcquireAccessToken(workloadClient);
         const response: Response = await fetch(`${workloadBEUrl}/eventhouse/${workspaceObjectId}/${eventhouseObjectId}`, {
@@ -831,16 +832,16 @@ export async function callGetEventhouseDatabases(workloadBEUrl: string, workload
         if (!response.ok) {
             // Handle non-successful responses here
             const errorMessage: string = await response.text();
-            console.error(`Error calling GetEventhouseDatabases API: ${errorMessage}`);
-            throw new Error(`Error calling GetEventhouseDatabases API: ${errorMessage}`);
+            console.error(`Error calling GetEventhouseItem API: ${errorMessage}`);
+            throw new Error(`Error calling GetEventhouseItem API: ${errorMessage}`);
         }
 
-        const result: string[] = await response.json();
+        const result: EventhouseItemMetadata = await response.json();
 
-        console.log('*** Successfully called GetEventhouseDatabases API');
+        console.log('*** Successfully called GetEventhouseItem API');
         return result;
     } catch (error) {
-        console.error('Error in GetEventhouseDatabases:', error);
+        console.error('Error in GetEventhouseItem:', error);
         throw error; // Propagate the error to the caller
     }
 }

@@ -25,7 +25,7 @@ import {
     AlertOn24Regular,
     PanelRightExpand20Regular,
     Database16Regular,
-    TriangleRight20Regular,
+    TriangleRight20Regular
 } from "@fluentui/react-icons";
 import { ContextProps, PageProps } from "src/App";
 import {
@@ -52,6 +52,8 @@ import {
     callItemDelete,
     callGetItem1SupportedOperators,
     callItem1DoubleResult,
+    callDatahubOpenEventhouse,
+    callGetEventhouseItem
 } from "../../controller/SampleWorkloadController";
 import { Ribbon } from "../SampleWorkloadRibbon/SampleWorkloadRibbon";
 import { convertGetItemResultToWorkloadItem } from "../../utils";
@@ -64,6 +66,7 @@ import {
 } from "../../models/SampleWorkloadModel";
 import "./../../styles.scss";
 import { LakehouseExplorerComponent } from "../SampleWorkloadLakehouseExplorer/SampleWorkloadLakehouseExplorer";
+import { EventhouseItemMetadata } from "src/models/EventhouseModel";
 
 export function SampleWorkloadEditor(props: PageProps) {
     const sampleWorkloadName = process.env.WORKLOAD_NAME;
@@ -92,11 +95,14 @@ export function SampleWorkloadEditor(props: PageProps) {
     const [apiErrorRequestId, setApiErrorRequestId] = useState<string>("");
     const [apiErrorStackTrace, setApiErrorStackTrace] = useState<string>("");
     const [selectedLakehouse, setSelectedLakehouse] = useState<GenericItem>(undefined);
+    const [selectedEventhouse, setSelectedEventhouse] = useState<GenericItem>(undefined);
+    const [selectedEventhouseItemMetadata, setSelectedEventhouseItemMetadata] = useState<EventhouseItemMetadata>(undefined);
     const [sampleItem, setSampleItem] = useState<WorkloadItem<ItemPayload>>(undefined);
     const [operand1, setOperand1] = useState<number>(0);
     const [operand2, setOperand2] = useState<number>(0);
     const [operator, setOperator] = useState<string>("");
     const [isDirty, setDirty] = useState<boolean>(false);
+    const [isDirtyEventhouse, setDirtyEventhouse] = useState<boolean>(true);
     const [supportedOperators, setSupportedOperators] = useState<string[]>([]);
 
     const msgboxButtonCountOptions = ["0", "1", "2", "3"];
@@ -118,7 +124,7 @@ export function SampleWorkloadEditor(props: PageProps) {
      * Each function defines a callback that will be called when the corresponding event occurs (Before navigation, after navigation, etc.)
      * If one of the following functions is called multiple times, it has no effect on the registration of the callback function.
      * Thus, each callback should be registered once per session to avoid unnecessary calls to the API, and so the following calls are placed in the useEffect hook.
-     */ 
+     */
     useEffect(() => {
         // register Blocking in Navigate.BeforeNavigateAway (for a forbidden url)
         callNavigationBeforeNavigateAway(workloadClient);
@@ -226,6 +232,18 @@ export function SampleWorkloadEditor(props: PageProps) {
         }
     }
 
+    async function onCallDatahubForEventhouse() {
+        const result = await callDatahubOpenEventhouse(
+            "Select an Eventhouse to use for Sample Workload",
+            false,
+            workloadClient
+        );
+        if (result) {
+            setSelectedEventhouse(result);
+            setDirtyEventhouse(false);
+        }
+    }
+
     async function onOperand1InputChanged(value: number) {
         setOperand1(value);
         setDirty(true);
@@ -253,6 +271,21 @@ export function SampleWorkloadEditor(props: PageProps) {
             // Update both operands
             setOperand1(result.Operand1);
             setOperand2(result.Operand2);
+        }
+    }
+
+    async function onLoadDatabaseButtonClick() {
+        if (selectedEventhouse) {
+            const result = await callGetEventhouseItem(
+                sampleWorkloadBEUrl,
+                workloadClient,
+                selectedEventhouse.workspaceId,
+                selectedEventhouse.id
+            );
+
+            if (result) {
+                setSelectedEventhouseItemMetadata(result);
+            }
         }
     }
 
@@ -334,6 +367,10 @@ export function SampleWorkloadEditor(props: PageProps) {
 
     function isDisabledDoubleResultButton(): boolean {
         return isDirty || operator == "0" || sampleItem == undefined;
+    }
+
+    function isDisabledLoadDatabaseButton(): boolean {
+        return isDirtyEventhouse;
     }
 
     // HTML page contents
@@ -640,6 +677,70 @@ export function SampleWorkloadEditor(props: PageProps) {
                         <Divider alignContent="start">Example of Lakehouse Explorer</Divider>
                         <div className="section">
                             <LakehouseExplorerComponent workloadClient={workloadClient} />
+                        </div>
+                    </span>
+                )}
+                {selectedTab == "kustoTab" && (
+                    <span>
+                        <h2>Kusto Item Browser</h2>
+                        {/* Crud item API usage example */}
+                        <Divider alignContent="start">
+                            {sampleItem ? "" : "New "}Item Details
+                        </Divider>
+                        <div className="section">
+                            {sampleItem && (
+                                <Label>WorkspaceId Id: {sampleItem?.workspaceId}</Label>
+                            )}
+                            {sampleItem && <Label>Item Id: {sampleItem?.id}</Label>}
+                            {sampleItem && (
+                                <Label>Item Display Name: {sampleItem?.displayName}</Label>
+                            )}
+                            {sampleItem && (
+                                <Label>Item Description: {sampleItem?.description}</Label>
+                            )}
+                        </div>
+                        <Divider alignContent="start">Selected Eventhouse Details</Divider>
+                        <div className="section">
+                            <Stack horizontal>
+                                <Field label="Eventhouse" orientation="horizontal" className="field">
+                                    <Input
+                                        size="small"
+                                        placeholder="Eventhouse Name"
+                                        style={{ marginLeft: "10px" }}
+                                        value={selectedEventhouse ? selectedEventhouse.displayName : ""}
+                                    />
+                                </Field>
+                                <Button
+                                    style={{ width: "24px", height: "24px" }}
+                                    icon={<Database16Regular />}
+                                    appearance="primary"
+                                    onClick={() => onCallDatahubForEventhouse()}
+                                />
+                            </Stack>
+                            <Field label="Eventhouse ID" orientation="horizontal" className="field">
+                                <Input size="small" placeholder="Eventhouse ID" value={selectedEventhouse ? selectedEventhouse.id : ""} />
+                            </Field>
+                        </div>
+                        <Divider alignContent="start">Databases</Divider>
+                        <div className="section">
+                            <Button
+                                appearance="primary"
+                                style={{ marginTop: "20px" }}
+                                icon={<TriangleRight20Regular />}
+                                disabled={isDisabledLoadDatabaseButton()}
+                                onClick={() => onLoadDatabaseButtonClick()}>
+                                Load Eventhouse databases
+                            </Button>
+                            {selectedEventhouseItemMetadata && (
+                                <div style={{ marginTop: '10px', fontSize: '14px' }}>
+                                    <h3>List of Database Items:</h3>
+                                    <ul style={{ paddingLeft: '20px' }}>
+                                        {selectedEventhouseItemMetadata.properties?.databasesItemIds?.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </span>
                 )}

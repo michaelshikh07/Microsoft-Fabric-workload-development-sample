@@ -5,6 +5,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 using Boilerplate.Constants;
 using Boilerplate.Contracts;
+using Boilerplate.Contracts.KustoItems;
 using Boilerplate.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,10 +45,10 @@ namespace Boilerplate.Controllers
                 var authorizationContext = await _authenticationService.AuthenticateDataPlaneCall(_httpContextAccessor.HttpContext, allowedScopes: new string[] {WorkloadScopes.EventhouseReadAll});
                 var token = await _authenticationService.GetAccessTokenOnBehalfOf(authorizationContext, EventhubFabricScopes);
 
-                var url = $"{EnvironmentConstants.FabricApiBaseUrl}/v1/workspaces/{workspaceId}/items/{eventhouseId}";
+                var url = $"{EnvironmentConstants.FabricApiBaseUrl}/v1/workspaces/{workspaceId}/eventhouses/{eventhouseId}";
 
                 var response = await _httpClientService.GetAsync(url, token);
-                var eventhouse = await response.Content.ReadAsAsync<FabricItem>();
+                var eventhouse = await response.Content.ReadAsAsync<EventhouseItem>();
                 return Ok(eventhouse);
             }
             catch (AuthenticationException ex)
