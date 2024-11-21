@@ -10,6 +10,8 @@ namespace Boilerplate.Constants
         public const string Item1ReadWriteAll = "Item1.ReadWrite.All";
         public const string FabricLakehouseReadAll = "FabricLakehouse.Read.All";
         public const string FabricLakehouseReadWriteAll = "FabricLakehouse.ReadWrite.All";
+        public const string EventhouseReadAll = "Eventhouse.Read.All";
+        public const string EventhouseReadWriteAll = "Eventhouse.ReadWrite.All";
         public const string FabricWorkloadControl = "FabricWorkloadControl";
     }
 }

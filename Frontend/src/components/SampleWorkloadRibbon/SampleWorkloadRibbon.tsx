@@ -189,6 +189,7 @@ export function Ribbon(props: RibbonProps) {
         <Tab value="jobs">Jobs</Tab>
         <Tab value="api">API Playground</Tab>
         <Tab value="fluentui">FluentUI Playground</Tab>
+        <Tab value="kustoTab">Kusto</Tab>
       </TabList>
 
       <div className="toolbarContainer">

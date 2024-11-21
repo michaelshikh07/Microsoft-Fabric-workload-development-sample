@@ -322,6 +322,46 @@ export async function callDatahubOpen(
 }
 
 /**
+ * Calls the 'datahub.openDialog' function from the WorkloadClientAPI to open a OneLake data hub dialog to select Eventhouse item(s).
+ *
+ * @param {string} dialogDescription - The sub-title of the datahub dialog
+ * @param {boolean} multiSelectionEnabled - Whether the datahub dialog supports multi selection of datahub items
+ * @param {WorkloadClientAPI} workloadClient - An instance of the WorkloadClientAPI.
+ */
+export async function callDatahubOpenEventhouse(
+    dialogDescription: string,
+    multiSelectionEnabled: boolean,
+    workloadClient: WorkloadClientAPI): Promise<GenericItem> {
+
+    const datahubConfig: DatahubSelectorDialogConfig = {
+        supportedTypes: ['KustoEventHouse'],
+        multiSelectionEnabled: multiSelectionEnabled,
+        dialogDescription: dialogDescription,
+        // not in use in the regular selector, but required to be non-empty for validation
+        hostDetails: {
+            experience: 'experience',
+            scenario: 'scenario',
+        }
+    };
+
+    const result: DatahubSelectorDialogResult = await workloadClient.datahub.openDialog(datahubConfig);
+    if (!result.selectedDatahubItem){
+        return null;
+    }
+    
+    const selectedItem = result.selectedDatahubItem[0];
+    const { itemObjectId, workspaceObjectId } = selectedItem;
+    const { displayName, description } = selectedItem.datahubItemUI;
+    return {
+        id: itemObjectId,
+        workspaceId: workspaceObjectId,
+        type: 'KustoEventHouse',
+        displayName,
+        description
+    };
+}
+
+/**
  * Calls the 'dialog.open' function from the WorkloadClientAPI to open a message box dialog.
  *
  * @param {string} title - The title of the message box.
@@ -765,6 +805,42 @@ export async function callItem1DoubleResult(workloadBEUrl: string, workloadClien
         return result;
     } catch (error) {
         console.error('Error in callItem1DoubleResult:', error);
+        throw error; // Propagate the error to the caller
+    }
+}
+
+/**
+ * Calls the GetEventhouseDatabases endpoint of the workload API to get the list of databases object ids.
+ * 
+ * @param {WorkloadClientAPI} workloadClient - An instance of the WorkloadClientAPI.
+ * @param {string} workspaceObjectId - The workspace object ID.
+ * @param {string} eventhouseObjectId - The Eventhouse object ID.
+ * @returns {Promise<{ Operand1: number, Operand2: number }>} A Promise that resolves to an object containing the updated operands.
+ */
+export async function callGetEventhouseDatabases(workloadBEUrl: string, workloadClient: WorkloadClientAPI, workspaceObjectId: string, eventhouseObjectId: string): Promise<string[]> {
+    try {
+        const accessToken: AccessToken = await callAuthAcquireAccessToken(workloadClient);
+        const response: Response = await fetch(`${workloadBEUrl}/eventhouse/${workspaceObjectId}/${eventhouseObjectId}`, {
+            method: `GET`,
+            headers: {
+                'Authorization': 'Bearer ' + accessToken.token,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            // Handle non-successful responses here
+            const errorMessage: string = await response.text();
+            console.error(`Error calling GetEventhouseDatabases API: ${errorMessage}`);
+            throw new Error(`Error calling GetEventhouseDatabases API: ${errorMessage}`);
+        }
+
+        const result: string[] = await response.json();
+
+        console.log('*** Successfully called GetEventhouseDatabases API');
+        return result;
+    } catch (error) {
+        console.error('Error in GetEventhouseDatabases:', error);
         throw error; // Propagate the error to the caller
     }
 }
