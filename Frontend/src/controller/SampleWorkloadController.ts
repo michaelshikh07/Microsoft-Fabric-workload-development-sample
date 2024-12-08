@@ -826,7 +826,7 @@ export async function callGetEventhouseItem(workloadBEUrl: string, workloadClien
             headers: {
                 'Authorization': 'Bearer ' + accessToken.token,
                 'Content-Type': 'application/json',
-            },
+            }
         });
 
         if (!response.ok) {
@@ -842,6 +842,42 @@ export async function callGetEventhouseItem(workloadBEUrl: string, workloadClien
         return result;
     } catch (error) {
         console.error('Error in GetEventhouseItem:', error);
+        throw error; // Propagate the error to the caller
+    }
+}
+
+export async function CallExecuteQuery(workloadBEUrl: string, workloadClient: WorkloadClientAPI, queryUrl: string, databaseName: string, query: string) : Promise<object[]> {
+    try {
+
+        //KqlDatabases/query
+        const accessToken: AccessToken = await callAuthAcquireAccessToken(workloadClient);
+        const response: Response = await fetch(`${workloadBEUrl}/KqlDatabases/query`, {
+            method: `POST`,
+            headers: {
+                'Authorization': 'Bearer ' + accessToken.token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'QueryServiceUri': queryUrl,
+                'DatabaseName': databaseName,
+                'Query': query
+            })
+        });
+
+        if (!response.ok) {
+            // Handle non-successful responses here
+            const errorMessage: string = await response.text();
+            console.error(`Error calling ExecuteQuery API: ${errorMessage}`);
+            throw new Error(`Error calling ExecuteQuery API: ${errorMessage}`);
+        }
+
+        const result: object[] = await response.json();
+
+        console.log('*** Successfully called ExecuteQuery API');
+        return result;
+    }
+    catch (error) {
+        console.error('Error in CallExecuteQuery:', error);
         throw error; // Propagate the error to the caller
     }
 }

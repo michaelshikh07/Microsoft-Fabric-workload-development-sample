@@ -53,7 +53,8 @@ import {
     callGetItem1SupportedOperators,
     callItem1DoubleResult,
     callDatahubOpenEventhouse,
-    callGetEventhouseItem
+    callGetEventhouseItem,
+    CallExecuteQuery
 } from "../../controller/SampleWorkloadController";
 import { Ribbon } from "../SampleWorkloadRibbon/SampleWorkloadRibbon";
 import { convertGetItemResultToWorkloadItem } from "../../utils";
@@ -97,6 +98,9 @@ export function SampleWorkloadEditor(props: PageProps) {
     const [selectedLakehouse, setSelectedLakehouse] = useState<GenericItem>(undefined);
     const [selectedEventhouse, setSelectedEventhouse] = useState<GenericItem>(undefined);
     const [selectedEventhouseItemMetadata, setSelectedEventhouseItemMetadata] = useState<EventhouseItemMetadata>(undefined);
+    const [selectedDatabaseForQuery, setSelectedDatabaseForQuery] = useState<string>(undefined);
+    const [selectedQueryToExecute, setSelectedQueryToExecute] = useState<string>(undefined);
+    const [queryResult, setQueryResult] = useState<string>("");
     const [sampleItem, setSampleItem] = useState<WorkloadItem<ItemPayload>>(undefined);
     const [operand1, setOperand1] = useState<number>(0);
     const [operand2, setOperand2] = useState<number>(0);
@@ -285,6 +289,22 @@ export function SampleWorkloadEditor(props: PageProps) {
 
             if (result) {
                 setSelectedEventhouseItemMetadata(result);
+                setSelectedDatabaseForQuery(result.properties.databasesItemIds[0])
+            }
+        }
+    }
+
+    async function onExecuteQuryButtonClick() {
+        if (selectedEventhouse) {
+            const result = await CallExecuteQuery(
+                sampleWorkloadBEUrl,
+                workloadClient,
+                selectedEventhouseItemMetadata?.properties.queryServiceUri,
+                selectedDatabaseForQuery,
+                selectedQueryToExecute
+            );
+            if (result) {
+                setQueryResult(JSON.stringify(result));
             }
         }
     }
@@ -370,6 +390,10 @@ export function SampleWorkloadEditor(props: PageProps) {
     }
 
     function isDisabledLoadDatabaseButton(): boolean {
+        return isDirtyEventhouse;
+    }
+
+    function isDisabledExecuteQueryButton(): boolean {
         return isDirtyEventhouse;
     }
 
@@ -741,6 +765,49 @@ export function SampleWorkloadEditor(props: PageProps) {
                                     </ul>
                                 </div>
                             )}
+                        </div>
+                        <Divider alignContent="start">Query</Divider>
+                        <div className="section">
+                            <div style={{ marginTop: '10px', fontSize: '14px' }}>
+                                <Field label="Database" orientation="horizontal" className="field">
+                                    <select style={{ paddingLeft: '20px' }}>
+                                        {(selectedEventhouseItemMetadata?.properties?.databasesItemIds || []).map((item, index) => (
+                                            <option key={index} value={item} onClick={()=> setSelectedDatabaseForQuery(item)}>{item}</option>
+                                        ))}
+                                    </select>
+                                </Field>
+                            </div>
+                            <Field label="Query Uri" orientation="horizontal" className="field">
+                                <Input
+                                    size="small"
+                                    placeholder="Query Uri"
+                                    value={selectedEventhouseItemMetadata?.properties ? selectedEventhouseItemMetadata?.properties.queryServiceUri : ""}
+                                    style={{ width: '400px' }}
+                                    disabled
+                                />
+                            </Field>
+                            <Field label="Query" orientation="horizontal" className="field">
+                                <textarea
+                                    placeholder="Enter your query here"
+                                    style={{ width: '400px', height: '100px', textAlign: 'left'}}
+                                    onChange={(e) => setSelectedQueryToExecute(e.target.value)}
+                                />
+                            </Field>
+                            <Button
+                                appearance="primary"
+                                style={{ marginTop: "20px" ,width: '530px', height: '30px' }}
+                                icon={<TriangleRight20Regular />}
+                                disabled= {isDisabledExecuteQueryButton()}
+                                onClick={() => onExecuteQuryButtonClick()}>
+                                Execute Query
+                            </Button>
+                            <Field label="Result" orientation="horizontal" className="field">
+                                <textarea
+                                    placeholder= {queryResult}
+                                    style={{ width: '400px', height: '100px', textAlign: 'left' }}
+                                    disabled
+                                />
+                            </Field>
                         </div>
                     </span>
                 )}

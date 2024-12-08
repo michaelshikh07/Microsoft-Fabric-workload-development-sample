@@ -16,6 +16,7 @@ using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Threading.Tasks;
+using Kusto.Data.Net.Client;
 
 namespace Boilerplate
 {
@@ -70,6 +71,10 @@ namespace Boilerplate
                         services.AddSingleton<IHttpClientService, HttpClientService>();
                         services.AddSingleton<ILakehouseClientService, LakehouseClientService>();
 
+                        // kusto query services
+                        services.AddSingleton(KustoClientFactory.CreateKustoStatelessClient()); 
+                        services.AddSingleton<IKustoClientService, KustoClientService>();
+                        
                         //// add more dependencies as needed
 
                         services.AddHostedService<FabricBackendExtension>();
