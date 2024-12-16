@@ -9,9 +9,10 @@ import { WorkloadAuthError } from "@ms-fabric/workload-client";
 
 interface SaveAsDialogProps extends PageProps {
     isImmediateSave?: boolean;
+    itemType?: string;
 }
 
-export function SaveAsDialog({ workloadClient, isImmediateSave }: SaveAsDialogProps) {
+export function SaveAsDialog({ workloadClient, isImmediateSave, itemType }: SaveAsDialogProps) {
     const sampleWorkloadName = process.env.WORKLOAD_NAME;
     // The type of the item in fabric is {workloadName}/{itemName}
     const sampleItemType = sampleWorkloadName + ".SampleWorkloadItem";
@@ -34,11 +35,11 @@ export function SaveAsDialog({ workloadClient, isImmediateSave }: SaveAsDialogPr
             try {
                 setIsSaveInProgress(true);
                 setIsSaveDisabled(true);
-                 // raise consent dialog for the user
-                 await callAuthAcquireAccessToken(workloadClient,  requestDefaultConsent ? '.default' : null);
-                 createResult = await handleCreateSampleItem(pageContext.workspaceObjectId, displayName, description);
-            } catch(error) {
-                switch(error?.error) {
+                // raise consent dialog for the user
+                await callAuthAcquireAccessToken(workloadClient, requestDefaultConsent ? '.default' : null);
+                createResult = await handleCreateSampleItem(pageContext.workspaceObjectId, displayName, description);
+            } catch (error) {
+                switch (error?.error) {
                     case WorkloadAuthError.WorkloadConfigError:
                         setValidationMessage("Workload config error - make sure that you have added the right configurations for your AAD app to the manifest!");
                         break;
@@ -79,14 +80,14 @@ export function SaveAsDialog({ workloadClient, isImmediateSave }: SaveAsDialogPr
 
         try {
             const createItemPayload: CreateItemPayload = {
-                 item1Metadata: {
-                     lakehouse: { id: EMPTY_GUID, workspaceId: EMPTY_GUID } 
+                item1Metadata: {
+                    lakehouse: { id: EMPTY_GUID, workspaceId: EMPTY_GUID }
                 }
             };
 
             const createdItem: GenericItem = await callItemCreate(
                 workspaceObjectId,
-                sampleItemType,
+                itemType ? sampleWorkloadName + "." + itemType : sampleItemType,
                 displayName,
                 description,
                 createItemPayload,
@@ -122,7 +123,7 @@ export function SaveAsDialog({ workloadClient, isImmediateSave }: SaveAsDialogPr
                 <Field label="Sample description:">
                     <Input onChange={e => onDescriptionChanged(e.target.value)} defaultValue={description} disabled={isSaveInProgress} />
                 </Field>
-                <Checkbox label ="Request Initial Consent (Mark this if this is the first time you're working with this workload)" onChange={(v) => setRequestDefaultConsent(v.target.checked)}/>
+                <Checkbox label="Request Initial Consent (Mark this if this is the first time you're working with this workload)" onChange={(v) => setRequestDefaultConsent(v.target.checked)} />
                 <Stack className="create-buttons" horizontal tokens={{ childrenGap: 10 }}>
                     <Button appearance="primary" onClick={() => onSaveClicked()} disabled={isSaveDisabled}>Create</Button>
                     <Button appearance="secondary" onClick={() => onCancelClicked()}>Cancel</Button>

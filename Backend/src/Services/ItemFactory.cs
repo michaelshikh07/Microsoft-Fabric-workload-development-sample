@@ -36,6 +36,8 @@ namespace Boilerplate.Services
             {
                 case WorkloadConstants.ItemTypes.Item1:
                     return new Item1(_serviceProvider.GetService<ILogger<Item1>>(), _itemMetadataStore, _lakeHouseClientService, _authenticationService, authorizationContext);
+                case WorkloadConstants.ItemTypes.Item2:
+                    return new Item2(_serviceProvider.GetService<ILogger<Item2>>(), _itemMetadataStore, authorizationContext);
 
                 default:
                     throw new NotSupportedException($"Items of type {itemType} are not supported");

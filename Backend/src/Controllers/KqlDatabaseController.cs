@@ -65,7 +65,7 @@ namespace Fabric_Extension_BE_Boilerplate.Controllers
         {
             try
             {
-                var authorizationContext = await _authenticationService.AuthenticateDataPlaneCall(_httpContextAccessor.HttpContext, allowedScopes: new string[] {WorkloadScopes.EventhouseReadAll});
+                var authorizationContext = await _authenticationService.AuthenticateDataPlaneCall(_httpContextAccessor.HttpContext, allowedScopes: new string[] {WorkloadScopes.KQLDatabaseReadAll});
                 var scopes = new[] {$"{request.QueryServiceUri}/.default"};
                 var token = await _authenticationService.GetAccessTokenOnBehalfOf(authorizationContext, scopes);
 
@@ -80,9 +80,9 @@ namespace Fabric_Extension_BE_Boilerplate.Controllers
                 
                 return Ok(jsonTable);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _logger.LogError($"QueryKqlDatabase: Failed getting tables");
+                _logger.LogError("QueryKqlDatabase: Failed getting tables");
                 return Problem();
             }
         }

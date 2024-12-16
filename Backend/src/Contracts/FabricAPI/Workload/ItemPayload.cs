@@ -14,5 +14,8 @@ namespace Fabric_Extension_BE_Boilerplate.Contracts.FabricAPI.Workload
     {
         [Newtonsoft.Json.JsonProperty("item1Metadata", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Item1ClientMetadata Item1Metadata { get; init; }
+        
+        [Newtonsoft.Json.JsonProperty("item2Metadata", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Item2ClientMetadata Item2Metadata { get; init; }
     }
 }
