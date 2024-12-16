@@ -13,6 +13,7 @@
     <!-- Include the XML and FE files -->
     <file src="WorkloadManifest.xml" target="BE\WorkloadManifest.xml" />
     <file src="Item1.xml" target="BE\Item1.xml" />
+    <file src="Item2.xml" target="BE\Item2.xml" />
     <file src="..\..\..\..\Frontend\Package\*" target="FE" />
     <file src="..\..\..\..\Frontend\Package\assets\*" target="FE\assets" />
   </files>

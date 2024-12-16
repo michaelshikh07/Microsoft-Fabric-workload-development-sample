@@ -12,6 +12,8 @@ namespace Boilerplate.Constants
         public const string FabricLakehouseReadWriteAll = "FabricLakehouse.ReadWrite.All";
         public const string EventhouseReadAll = "Eventhouse.Read.All";
         public const string EventhouseReadWriteAll = "Eventhouse.ReadWrite.All";
+        public const string KQLDatabaseReadAll = "KQLDatabase.ReadWrite.All";
+        public const string KQLDatabaseReadWriteAll = "KQLDatabase.ReadWrite.All";
         public const string FabricWorkloadControl = "FabricWorkloadControl";
     }
 }

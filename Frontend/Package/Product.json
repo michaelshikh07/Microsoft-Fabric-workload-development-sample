@@ -66,6 +66,26 @@
             "workspace-plus-new-teams"
           ],
           "itemType": "SampleWorkloadItem"
+        },
+        {
+          "title": "MRTA Sample Item",
+          "description": "Create a MRTA Sample Item for your Dev Experience",
+          "icon": {
+            "name": "assets/rth.png"
+          },
+          "icon_small": {
+            "name": "assets/rth.png"
+          },
+          "onClick": {
+            "action": "open.createMrtaSampleWorkload"
+          },
+          "availableIn": [
+            "home",
+            "create-hub",
+            "workspace-plus-new",
+            "workspace-plus-new-teams"
+          ],
+          "itemType": "MrtaSampleItem"
         }
       ]
     },
