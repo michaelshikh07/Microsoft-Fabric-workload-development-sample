@@ -71,6 +71,9 @@ namespace Boilerplate
                         services.AddSingleton<IHttpClientService, HttpClientService>();
                         services.AddSingleton<ILakehouseClientService, LakehouseClientService>();
 
+                        // Fabric API client
+                        services.AddSingleton<IFabricApiClient, FabricApiClient>();
+                        
                         // kusto query services
                         services.AddSingleton(KustoClientFactory.CreateKustoStatelessClient()); 
                         services.AddSingleton<IKustoClientService, KustoClientService>();
