@@ -71,14 +71,20 @@ namespace Fabric_Extension_BE_Boilerplate.Controllers
 
                 var clientRequestProperties = GenerateClientRequestProperties(token);
                 var dataReader = await _kustoClientService.ExecuteQueryAsync(request.QueryServiceUri, request.DatabaseName, request.Query, clientRequestProperties, default).ConfigureAwait(false);
-                
+
                 var dataTable = new DataTable();
                 dataTable.Load(dataReader);
-                
+
                 var serializedDataTable = JsonConvert.SerializeObject(dataTable);
                 var jsonTable = JArray.Parse(serializedDataTable);
-                
+
                 return Ok(jsonTable);
+                
+                // An alternative method will be to return the result as a stream, it will be more efficient in terms of performance,
+                // but will require additional processing on the client side. 
+                //var stream = KustoJsonDataStream.GetReaderDataAsStream(dataReader);
+                
+                //return Ok(stream);
             }
             catch (Exception)
             {
