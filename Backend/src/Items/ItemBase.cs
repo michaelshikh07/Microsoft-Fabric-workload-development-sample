@@ -91,6 +91,7 @@ namespace Boilerplate.Items
 
             SetDefinition(createItemRequest.CreationPayload);
 
+            await CreateAdditionalResources();
             await Store();
             await AllocateAndFreeResources();
             await UpdateFabric();
@@ -132,6 +133,11 @@ namespace Boilerplate.Items
             await Store();
             await AllocateAndFreeResources();
             await UpdateFabric();
+        }
+
+        protected virtual Task CreateAdditionalResources()
+        {
+            return Task.CompletedTask;
         }
 
         private async Task Store()

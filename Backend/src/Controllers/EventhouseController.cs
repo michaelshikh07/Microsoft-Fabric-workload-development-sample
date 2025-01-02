@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using Boilerplate.Constants;
-using Boilerplate.Contracts;
 using Boilerplate.Contracts.KustoItems;
 using Boilerplate.Services;
 using Microsoft.AspNetCore.Http;

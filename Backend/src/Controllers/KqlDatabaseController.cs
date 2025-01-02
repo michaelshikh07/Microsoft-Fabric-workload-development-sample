@@ -22,8 +22,7 @@ namespace Fabric_Extension_BE_Boilerplate.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAuthenticationService _authenticationService;
         private readonly IKustoClientService _kustoClientService;
-
-
+        
         public KqlDatabaseController(Microsoft.Extensions.Logging.ILogger<KqlDatabaseController> logger,
             IHttpContextAccessor httpContextAccessor,
             IAuthenticationService authenticationService,

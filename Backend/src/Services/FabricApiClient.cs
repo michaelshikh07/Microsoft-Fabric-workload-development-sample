@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Azure;
 using Boilerplate.Constants;
 using Microsoft.Fabric.Api;
 using Microsoft.Fabric.Api.Eventhouse.Models;
+using Microsoft.Fabric.Api.KQLDatabase.Models;
 
 namespace Boilerplate.Services;
 
@@ -16,7 +16,7 @@ public class FabricApiClient : IFabricApiClient
         _fabricBaseUri = new Uri(EnvironmentConstants.FabricApiBaseUrl);
     }
 
-    public async Task<Response<Eventhouse>> CreateEventhouse(Guid workspaceId, string displayName, string token)
+    public async Task<Eventhouse> CreateEventhouse(Guid workspaceId, string displayName, string token)
     {
         var fabricClient = new FabricClient(token, _fabricBaseUri);
         var createEventhouseRequest = new CreateEventhouseRequest(displayName);
@@ -24,11 +24,17 @@ public class FabricApiClient : IFabricApiClient
         return await fabricClient.Eventhouse.Items.CreateEventhouseAsync(workspaceId, createEventhouseRequest);
     }
 
-    public async Task<Response<Eventhouse>> GetEventhouse(Guid workspaceId, Guid eventhouseId, string displayName, string token)
+    public async Task<Eventhouse> GetEventhouse(Guid workspaceId, Guid eventhouseId, string token)
     {
         var fabricClient = new FabricClient(token, _fabricBaseUri);
-        var createEventhouseRequest = new CreateEventhouseRequest(displayName);
 
         return await fabricClient.Eventhouse.Items.GetEventhouseAsync(workspaceId, eventhouseId);
+    }
+
+    public async Task<KQLDatabase> GetKqlDatabase(Guid workspaceId, Guid kqlDatabaseId, string token)
+    {
+        var fabricClient = new FabricClient(token, _fabricBaseUri);
+
+        return await fabricClient.KQLDatabase.Items.GetKQLDatabaseAsync(workspaceId, kqlDatabaseId);
     }
 }
