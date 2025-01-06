@@ -19,18 +19,32 @@ export async function initialize(params: InitParams) {
     const calculateAsText = sampleItemType + ".CalculateAsText";
 
     workloadClient.action.onAction(async function ({ action, data }) {
+        const { workspaceObjectId } = data as ItemCreateContext;
         switch (action) {
             /* This is the entry point for the Sample Workload Create experience, 
             as referenced by the Product->CreateExperience->Cards->onClick->action 'open.createSampleWorkload' in the localWorkloadManifest.json manifest.
              This will open a Save dialog, and after a successful creation, the editor experience of the saved sampleWorkload item will open
             */
             case 'open.createSampleWorkload':
-                const { workspaceObjectId } = data as ItemCreateContext;
                 return workloadClient.dialog.open({
                     workloadName: sampleWorkloadName,
                     dialogType: DialogType.IFrame,
                     route: {
                         path: `/sample-workload-create-dialog/${workspaceObjectId}`,
+                    },
+                    options: {
+                        width: 360,
+                        height: 360,
+                        hasCloseButton: false
+                    },
+                });
+
+            case 'open.createMrtaSampleWorkload':
+                return workloadClient.dialog.open({
+                    workloadName: sampleWorkloadName,
+                    dialogType: DialogType.IFrame,
+                    route: {
+                        path: `/mrta-sample-create-dialog/${workspaceObjectId}`,
                     },
                     options: {
                         width: 360,

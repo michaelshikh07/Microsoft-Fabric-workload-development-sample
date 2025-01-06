@@ -3,7 +3,7 @@
     "displayName": "MRTA Sample Item",
     "displayNamePlural": "MRTA Sample Items",
     "editor": {
-      "path": "/sample-workload-editor"
+      "path": "/mrta-sample-workload-editor"
     },
     "icon": {
       "name": "assets/rth.png"
