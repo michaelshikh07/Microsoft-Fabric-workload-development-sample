@@ -83,6 +83,8 @@ public class Item2 : ItemBase<Item2, Item2Metadata, Item2ClientMetadata>, IItem2
     {
         try
         {
+            var metadata = Metadata.Clone();
+            
             var fabricToken = await _authenticationService.GetAccessTokenOnBehalfOf(AuthorizationContext, FabricScopes);
 
             var eventhouseDisplayName = $"{DisplayName}_Eventhouse";
@@ -92,6 +94,14 @@ public class Item2 : ItemBase<Item2, Item2Metadata, Item2ClientMetadata>, IItem2
             var defaultKqlDatabaseId = eventhouseItem.Properties.DatabasesItemIds.FirstOrDefault();
             var kqlDatabaseItem = await _fabricApiClient.GetKqlDatabase(WorkspaceObjectId, defaultKqlDatabaseId, fabricToken);
 
+            metadata.EventhouseItemId = eventhouseItem.Id;
+            metadata.EventhouseDisplayName = eventhouseItem.DisplayName;
+            metadata.KqlDatabaseItemId = kqlDatabaseItem.Id;
+            metadata.KqlDatabaseDisplayName = kqlDatabaseItem.DisplayName;
+            metadata.KqlDatabaseQueryUrl = kqlDatabaseItem.Properties.QueryServiceUri;
+
+            _metadata = metadata;
+            
             // fire and forget, prepare initial data on kusto side
             _ = PrepareKqlDatabaseData(kqlDatabaseItem);
 

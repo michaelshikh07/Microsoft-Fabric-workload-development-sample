@@ -98,7 +98,7 @@ namespace Fabric_Extension_BE_Boilerplate.Controllers
             {
                 ClientRequestId = GetRequestIdHeader() ?? Guid.NewGuid().ToString(),
                 AuthorizationScheme = "Bearer",
-                SecurityToken = token
+                SecurityToken = token,
             };
         }
 
